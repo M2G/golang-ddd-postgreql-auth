@@ -1,0 +1,203 @@
+#-------------------------------------------------------------------------------
+# Gitlab-CI
+#-------------------------------------------------------------------------------
+
+image: tmaier/docker-compose:18.09
+
+variables:
+  DOCKER_DRIVER: overlay
+  GCR_DOMAIN: gcr.io
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  CONTAINER_LATEST_IMAGE: $CI_REGISTRY_IMAGE:latest
+  CONTAINER_GCR_IMAGE: $GCR_DOMAIN/$GOOGLE_PROJECT_ID/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
+  CONTAINER_STAGING_IMAGE: $CI_REGISTRY_IMAGE/staging:$CI_COMMIT_REF_SLUG
+  PACKAGE_PATH: /go/src/gitlab.com/go-mysql-crud
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+stages:
+  - dep
+  - lint
+  - test
+  - build
+#  - deploy
+
+# A hack to make Golang-in-Gitlab happy
+.anchors:
+  - &inject-gopath
+      mkdir -p $(dirname ${PACKAGE_PATH})
+      && ln -s ${CI_PROJECT_DIR} ${PACKAGE_PATH}
+      && cd ${PACKAGE_PATH}
+
+#-------------------------------------------------------------------------------
+# Templates
+#-------------------------------------------------------------------------------
+
+# BRANCH
+#.: &branch-production
+#  only:
+#    - /^\d+(\.\d+){2}$/
+#  except:
+#    - branches
+#
+#.: &branch-staging
+#  only:
+#    - master
+#
+#.: &branch-develop
+#  only:
+#    - /^(feature|fix)\/.*$/
+#    - dev
+#  except:
+#    - master
+
+.: &branch-test
+  only:
+    - /^(feature|fix)\/.*$/
+    - dev
+    - master
+
+# TAGS
+.: &runner-docker
+  tags:
+    - docker
+
+#.: &runner-production
+#  tags:
+#    - prod
+#
+#.: &runner-staging
+#  tags:
+#    - staging
+
+#-------------------------------------------------------------------------------
+# Jobs Production
+#-------------------------------------------------------------------------------
+
+#build_prod:
+#  stage: build
+#  <<: [ *branch-production, *runner-docker ]
+#  environment: production
+#  services:
+#    - docker:17-dind
+#  script:
+#    - docker build --pull --build-arg SSH_PRIVATE_KEY="$SSH_PRIVATE_KEY" -t $CONTAINER_RELEASE_IMAGE --target release .
+#    - docker build --pull --build-arg SSH_PRIVATE_KEY="$SSH_PRIVATE_KEY" -t $CONTAINER_RELEASE_WORKER --target aaf-worker .
+#    - docker push $CONTAINER_RELEASE_IMAGE
+#    - docker push $CONTAINER_RELEASE_WORKER
+#    - docker tag $CONTAINER_RELEASE_IMAGE $CONTAINER_GCR_IMAGE
+#    - docker tag $CONTAINER_RELEASE_WORKER $CONTAINER_GCR_WORKER
+#    - docker login -u _json_key -p "$GOOGLE_KEY" https://$GCR_DOMAIN
+#    - docker push $CONTAINER_GCR_IMAGE
+#    - docker push $CONTAINER_GCR_WORKER
+#
+#deploy_prod:
+#  stage: deploy
+#  image: google/cloud-sdk
+#  <<: [ *branch-production, *runner-docker ]
+#  environment:
+#    name: production
+##    url: https://go-mysql-crud.api.com
+#  script:
+#    - kubectl config set-cluster kube-test --server="$KUBE_URL" --insecure-skip-tls-verify=true
+#    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
+#    - kubectl config set-context default --cluster=kube-test --user=admin
+#    - kubectl config use-context default
+#    - mkdir -p kube-files/
+#    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_REF_NAME"'/g' kubernetes.tpl.yml > kube-files/kubernetes.yml;
+#    - ls -lha kube-files/
+#    - kubectl apply -f kube-files/
+
+
+#-------------------------------------------------------------------------------
+# Jobs Staging
+#-------------------------------------------------------------------------------
+
+#build_staging:
+#  stage: build
+#  <<: [ *branch-staging, *runner-docker ]
+#  environment: staging
+#  services:
+#    - docker:17-dind
+#  script:
+#    - docker build --pull --build-arg SSH_PRIVATE_KEY="$SSH_PRIVATE_KEY" -t $CONTAINER_STAGING_IMAGE --target release .
+#    - docker push $CONTAINER_STAGING_IMAGE
+#    - docker push $CONTAINER_STAGING_WORKER
+#
+#deploy_staging:
+#  stage: deploy
+#  <<: [ *branch-staging, *runner-staging ]
+#  environment:
+#    name: staging
+##    url: https://go-mysql-crud-stg.api.com
+#  script:
+#    - docker-compose -f docker-compose.staging.yml pull
+#    - docker-compose -f docker-compose.staging.yml up -d
+#    - docker-compose -f docker-compose.staging.yml ps
+dep:
+  stage: dep
+  image: golang:1.14-alpine3.11
+  before_script:
+    - apk add --no-cache curl git
+    - curl -sSL https://github.com/golang/dep/releases/download/v0.5.4/dep-linux-amd64 -o /go/bin/dep
+    - chmod +x /go/bin/dep
+    - *inject-gopath
+  script:
+    - dep ensure -v -vendor-only
+  artifacts:
+    name: "vendor-$CI_PIPELINE_ID"
+    paths:
+      - vendor/
+    expire_in: 1 hour
+
+tests:
+  stage: test
+  <<: [ *branch-test, *runner-docker ]
+  tags:
+  - docker
+  environment: production
+  before_script:
+    - *inject-gopath
+  image: golang:1.14-alpine3.11
+  script:
+    - CGO_ENABLED=0 go test ./... -mod=mod
+
+#tests:
+#  stage: test
+#  <<: [ *branch-test, *runner-docker ]
+#  tags:
+#  - docker
+#  environment: production
+#  before_script:
+#    - apk -u --no-cache add build-base
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#  image: tmaier/docker-compose:18.09
+#  services:
+#  - docker:17-dind
+#  script:
+#  - make test
+
+lint:
+  stage: lint
+  image: registry.gitlab.com/backend9/docker-gometalinter
+  <<: [ *branch-test, *runner-docker ]
+  tags:
+  - docker
+  before_script:
+#  - eval `ssh-agent -s`
+#  - bash -c "ssh-add <(echo '$SSH_PRIVATE_KEY')"
+  - go mod vendor
+  - go mod download
+  script:
+  - GO111MODULE=on golangci-lint run
+
+build:
+  stage: build
+#  dependencies:
+#    - dep
+  image: docker:17
+  services:
+    - docker:17-dind
+  script:
+    - docker build -t app .

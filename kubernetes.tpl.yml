@@ -1,0 +1,90 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: _APP_NAME_
+  labels:
+    app: _APP_NAME_
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: _APP_NAME_
+  template:
+    metadata:
+      labels:
+        app: _APP_NAME_
+    spec:
+      volumes:
+      - name: secrets
+        secret:
+          secretName: go-mysql-crud-secrets
+      - name: conf
+        secret:
+          secretName: go-mysql-crud-conf
+      containers:
+        - name: _APP_NAME_
+          image: gcr.io/my-own-conf/_APP_NAME_:_VERSION_
+          imagePullPolicy: Always
+          command: ["/go-mysql-crud", "--configuration", "/conf/api.prod.yml"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 30Mi
+          env:
+            - name: APP_ENV
+              value: "production"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/my-own-conf-gcp-prod.json
+          volumeMounts:
+          - name: secrets
+            mountPath: "/secrets/"
+            readOnly: true
+          - name: conf
+            mountPath: "/conf/"
+            readOnly: true
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+            failureThreshold: 10
+      terminationGracePeriodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: _APP_NAME_
+spec:
+  type: NodePort
+  selector:
+    app: _APP_NAME_
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: _APP_NAME_
+spec:
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 85
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: _APP_NAME_

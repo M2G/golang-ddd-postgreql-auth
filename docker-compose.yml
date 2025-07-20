@@ -1,0 +1,8 @@
+version: '3.5'
+
+services:
+  go_mysql_crud:
+    image: registry.github.com/go-mysql-crud
+    container_name: go_mysql_crud
+    env_file:
+      - configuration/env/prod.env
