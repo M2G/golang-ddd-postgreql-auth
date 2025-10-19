@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/golang-ddd-postgreql-auth/internal/handlers"
+	"github.com/golang-ddd-postgresql-auth/internal/handlers"
 	"github.com/sirupsen/logrus"
 )
 

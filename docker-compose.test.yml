@@ -10,5 +10,5 @@ services:
         SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
     environment:
       - GO111MODULE=off
-    working_dir: /go/src/github.com/golang-ddd-postgreql-auth
+    working_dir: /go/src/github.com/golang-ddd-postgresql-auth
     command: "go test -v -timeout 10m -tags=integration -parallel=4 ./..."

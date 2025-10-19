@@ -1,7 +1,7 @@
 #CredentialsFile: credentials.json
 #ProjectID: project-id
 
-AppName: golang-ddd-postgreql-auth
+AppName: golang-ddd-postgresql-auth
 
 Logging:
   Level: debug

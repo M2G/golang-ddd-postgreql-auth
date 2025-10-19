@@ -17,15 +17,15 @@ spec:
       volumes:
       - name: secrets
         secret:
-          secretName: golang-ddd-postgreql-auth-secrets
+          secretName: golang-ddd-postgresql-auth-secrets
       - name: conf
         secret:
-          secretName: golang-ddd-postgreql-auth-conf
+          secretName: golang-ddd-postgresql-auth-conf
       containers:
         - name: _APP_NAME_
           image: gcr.io/my-own-conf/_APP_NAME_:_VERSION_
           imagePullPolicy: Always
-          command: ["/golang-ddd-postgreql-auth", "--configuration", "/conf/api.prod.yml"]
+          command: ["/golang-ddd-postgresql-auth", "--configuration", "/conf/api.prod.yml"]
           resources:
             requests:
               cpu: 10m

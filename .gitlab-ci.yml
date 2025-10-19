@@ -11,7 +11,7 @@ variables:
   CONTAINER_LATEST_IMAGE: $CI_REGISTRY_IMAGE:latest
   CONTAINER_GCR_IMAGE: $GCR_DOMAIN/$GOOGLE_PROJECT_ID/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
   CONTAINER_STAGING_IMAGE: $CI_REGISTRY_IMAGE/staging:$CI_COMMIT_REF_SLUG
-  PACKAGE_PATH: /go/src/gitlab.com/golang-ddd-postgreql-auth
+  PACKAGE_PATH: /go/src/gitlab.com/golang-ddd-postgresql-auth
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY

@@ -4,14 +4,14 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/golang-ddd-postgreql-auth/internal/repositories"
-	"github.com/golang-ddd-postgreql-auth/store"
+	"github.com/golang-ddd-postgresql-auth/internal/repositories"
+	"github.com/golang-ddd-postgresql-auth/store"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/golang-ddd-postgreql-auth/internal/drivers"
-	models "github.com/golang-ddd-postgreql-auth/models"
+	"github.com/golang-ddd-postgresql-auth/internal/drivers"
+	models "github.com/golang-ddd-postgresql-auth/models"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
