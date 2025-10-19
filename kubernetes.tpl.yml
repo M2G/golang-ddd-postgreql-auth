@@ -17,15 +17,15 @@ spec:
       volumes:
       - name: secrets
         secret:
-          secretName: go-mysql-crud-secrets
+          secretName: golang-ddd-postgreql-auth-secrets
       - name: conf
         secret:
-          secretName: go-mysql-crud-conf
+          secretName: golang-ddd-postgreql-auth-conf
       containers:
         - name: _APP_NAME_
           image: gcr.io/my-own-conf/_APP_NAME_:_VERSION_
           imagePullPolicy: Always
-          command: ["/go-mysql-crud", "--configuration", "/conf/api.prod.yml"]
+          command: ["/golang-ddd-postgreql-auth", "--configuration", "/conf/api.prod.yml"]
           resources:
             requests:
               cpu: 10m

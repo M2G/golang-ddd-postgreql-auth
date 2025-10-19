@@ -1,10 +1,11 @@
 package router
 
+/*
 import (
-  "net/http"
+	"net/http"
 
-  "github.com/go-chi/chi"
-	"github.com/go-mysql-crud/internal/handlers"
+	"github.com/go-chi/chi"
+	"github.com/golang-ddd-postgreql-auth/internal/handlers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,3 +20,4 @@ func PostRouter(pHandler *handlers.Post, log *logrus.Logger) http.Handler { // n
 
 	return r
 }
+*/

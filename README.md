@@ -12,8 +12,8 @@ Docker, Git, Go. Check `conf-dev.yml` from a configuration example.
 clone the repo, then fetch dependencies and u're good to go.
 
 ```
-    git clone git@github.com/go-mysql-crud.git $GOPATH/src/github.com/go-mysql-crud
-    cd $GOPATH/src/github.com/go-mysql-crud
+    git clone git@github.com/golang-ddd-postgreql-auth.git $GOPATH/src/github.com/golang-ddd-postgreql-auth
+    cd $GOPATH/src/github.com/golang-ddd-postgreql-auth
     export GO111MODULE=on;
     go mod vendor;
     go mod download;
@@ -24,8 +24,8 @@ clone the repo, then fetch dependencies and u're good to go.
 ### Build locally
 
 ```
-    git clone git@github.com/go-mysql-crud.git $GOPATH/src/github.com/go-mysql-crud
-    cd $GOPATH/src/github.com/go-mysql-crud
+    git clone git@github.com/golang-ddd-postgreql-auth.git $GOPATH/src/github.com/golang-ddd-postgreql-auth
+    cd $GOPATH/src/github.com/golang-ddd-postgreql-auth
     export GO111MODULE=on;
     go mod vendor;
     go mod download;

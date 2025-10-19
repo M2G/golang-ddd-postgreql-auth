@@ -6,7 +6,7 @@ services:
     environment:
     - API_ENV=staging
     - VIRTUAL_PORT=80
-    - VIRTUAL_HOST=go-mysql-crud-stg.api.com
+    - VIRTUAL_HOST=golang-ddd-postgreql-auth-stg.api.com
     command: --configuration /conf-staging.yml
 
 networks:

@@ -1,5 +1,6 @@
 package repositories
 
+/*
 import (
 	"context"
 	"database/sql"
@@ -131,3 +132,4 @@ func (m *mysqlPostRepo) Delete(ctx context.Context, id int64) (bool, error) {
 	}
 	return true, nil
 }
+*/

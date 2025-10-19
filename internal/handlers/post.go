@@ -1,16 +1,17 @@
 package handlers
 
+/*
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-mysql-crud/internal/repositories"
-	"github.com/go-mysql-crud/store"
+	"github.com/golang-ddd-postgreql-auth/internal/repositories"
+	"github.com/golang-ddd-postgreql-auth/store"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/go-mysql-crud/internal/drivers"
-	models "github.com/go-mysql-crud/models"
+	"github.com/golang-ddd-postgreql-auth/internal/drivers"
+	models "github.com/golang-ddd-postgreql-auth/models"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -185,3 +186,4 @@ func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	respondwithJSON(w, code, map[string]string{"message": msg})
 }
+*/

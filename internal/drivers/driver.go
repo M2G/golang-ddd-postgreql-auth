@@ -2,16 +2,14 @@ package drivers
 
 import (
 	"database/sql"
-	// no-lint
-	"fmt"
-	// no-lint
-	_ "github.com/go-sql-driver/mysql"
+	"log"
+
+	_ "github.com/lib/pq"
 )
 
 // DB type details
 type DB struct {
 	SQL *sql.DB
-	// Mgo *mgo.database
 }
 
 // ConnectSQL
@@ -19,20 +17,22 @@ func ConnectSQL(host, port, uname, pass, dbname string) (*DB, error) {
 	// DBConn
 	var dbConn = &DB{}
 
-	dbSource := fmt.Sprintf(
-		"docker:%s@tcp(%s:%s)/%s?charset=utf8",
-		pass,
-		host,
-		port,
-		dbname,
-	)
-
-	d, err := sql.Open("mysql", dbSource)
+	connStr := "postgres://postgres:password@localhost:5432/test_db?sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = db.Ping(); err != nil {
+		log.Println("DB Ping Failed")
+		log.Fatal(err)
+	}
+	log.Println("DB Connection started successfully")
 
 	if err != nil {
 		panic(err)
 	}
-	dbConn.SQL = d
+	dbConn.SQL = db
 
 	return dbConn, err
 }

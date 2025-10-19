@@ -9,7 +9,7 @@ now = $(shell date "+%Y-%m-%d %T UTC%z")
 compiler = $(shell go version)
 
 
-IMAGE_NAME :=  registry.github.com/go-mysql-crud
+IMAGE_NAME :=  registry.github.com/golang-ddd-postgreql-auth
 
 all: test build image
 .PHONY: all test clean

@@ -1,7 +1,7 @@
 #CredentialsFile: credentials.json
 #ProjectID: project-id
 
-AppName: go-mysql-crud
+AppName: golang-ddd-postgreql-auth
 
 Logging:
   Level: debug

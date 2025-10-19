@@ -11,7 +11,7 @@ variables:
   CONTAINER_LATEST_IMAGE: $CI_REGISTRY_IMAGE:latest
   CONTAINER_GCR_IMAGE: $GCR_DOMAIN/$GOOGLE_PROJECT_ID/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
   CONTAINER_STAGING_IMAGE: $CI_REGISTRY_IMAGE/staging:$CI_COMMIT_REF_SLUG
-  PACKAGE_PATH: /go/src/gitlab.com/go-mysql-crud
+  PACKAGE_PATH: /go/src/gitlab.com/golang-ddd-postgreql-auth
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -98,7 +98,7 @@ stages:
 #  <<: [ *branch-production, *runner-docker ]
 #  environment:
 #    name: production
-##    url: https://go-mysql-crud.api.com
+##    url: https://golang-ddd-postgreql-auth.api.com
 #  script:
 #    - kubectl config set-cluster kube-test --server="$KUBE_URL" --insecure-skip-tls-verify=true
 #    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
@@ -130,7 +130,7 @@ stages:
 #  <<: [ *branch-staging, *runner-staging ]
 #  environment:
 #    name: staging
-##    url: https://go-mysql-crud-stg.api.com
+##    url: https://golang-ddd-postgreql-auth-stg.api.com
 #  script:
 #    - docker-compose -f docker-compose.staging.yml pull
 #    - docker-compose -f docker-compose.staging.yml up -d
