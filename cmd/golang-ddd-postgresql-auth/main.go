@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
-	"golang-ddd-postgresql-auth/internal/drivers"
+	//"net/http"
 
-	_ "github.com/gin-gonic/gin"
+	"github.com/golang-ddd-postgresql-auth/internal/drivers"
+	"github.com/golang-ddd-postgresql-auth/internal/handlers"
+
+	"github.com/gin-gonic/gin"
 	// "github.com/golang-ddd-postgresql-auth/internal/handlers"
 	"context"
 	"log"
@@ -14,7 +17,7 @@ import (
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	//"github.com/go-chi/chi/middleware"
-	//"golang-ddd-postgresql-auth/internal/router"
+	routes "github.com/golang-ddd-postgresql-auth/internal/router"
 	logrus "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v3"
 )
@@ -37,7 +40,9 @@ func RunAPI(ctx context.Context, cmd *cli.Command) error {
 		os.Exit(-1)
 	}
 
-	log.Info(connection)
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
 	/*
 		r := chi.NewRouter()
@@ -47,22 +52,34 @@ func RunAPI(ctx context.Context, cmd *cli.Command) error {
 		r.Use(middleware.Recoverer)
 		r.Use(middleware.Logger)
 	*/
-	/*
-		pHandler := handlers.NewPostHandler(connection)
 
-		r.Route("/", func(rt chi.Router) {
-			rt.Mount("/posts", router.PostRouter(pHandler, log))
-		})
+	pHandler := handlers.NewUserHandler(connection)
 
-		log.Info("Server listen at :8181")
-		serverErr := http.ListenAndServe(":8181", r)
+	//  routes.Routes(pHandler, log)
 
-		if serverErr != nil {
-			log.Println("Error starting server")
-			return nil
-		}*/
+	router.Group("/v1")
+	{
+		routes.Routes(router, pHandler, log)
+	}
 
+	/*r.Route("/", func(rt chi.Router) {
+		rt.Mount("/posts", router.PostRouter(pHandler, log))
+	})*/
+
+	log.Info("Server listen at :8181")
+	/*serverErr := http.ListenAndServe(":8181", r)
+
+	  if serverErr != nil {
+	  	log.Println("Error starting server")
+	  	return nil
+	  }
+	*/
 	fmt.Println("Started server on - 127.0.0.1:8080")
+
+	err = router.Run()
+	if err != nil {
+		return err
+	}
 
 	return nil // nolint
 }
