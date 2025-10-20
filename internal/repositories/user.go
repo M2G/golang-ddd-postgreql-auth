@@ -1,66 +1,74 @@
 package repositories
 
-/*
 import (
-	"context"
-	"database/sql"
-	"github.com/go-mysql-crud/store"
+  "context"
+  "database/sql"
+  "fmt"
 
-	models "github.com/go-mysql-crud/models"
+  _ "github.com/lib/pq"
+
+  "github.com/golang-ddd-postgresql-auth/store"
+
+  models "github.com/golang-ddd-postgresql-auth/models"
 )
 
 // NewSQLPostRepo retunrs implement of post repository interface
 func NewSQLPostRepo(conn *sql.DB) store.Store {
-	return &mysqlPostRepo{
-		conn: conn,
-	}
+  return &mysqlUserRepo{
+    conn: conn,
+  }
 }
 
-type mysqlPostRepo struct {
-	conn *sql.DB
+type mysqlUserRepo struct {
+  conn *sql.DB
 }
 
-func (m *mysqlPostRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.Post, error) {
-	rows, err := m.conn.QueryContext(ctx, query, args...)
+func (m *mysqlUserRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.User, error) {
+  fmt.Println("args", args)
 
-	if err != nil {
-		return nil, err
-	}
+  rows, err := m.conn.QueryContext(ctx, query)
 
-	defer rows.Close()
+  fmt.Println("rows", rows)
+  fmt.Println("err", err)
 
-	payload := make([]*models.Post, 0)
-	for rows.Next() {
-		data := new(models.Post)
+  if err != nil {
+    return nil, err
+  }
 
-		if err := rows.Scan(
-			&data.ID,
-			&data.Title,
-			&data.Content,
-		); err != nil {
-			return nil, err
-		}
+  defer rows.Close()
 
-		payload = append(payload, data)
-	}
+  payload := make([]*models.User, 0)
+  for rows.Next() {
+    data := new(models.User)
 
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
+    if err := rows.Scan(
+      &data.ID,
+      &data.Email,
+    ); err != nil {
+      return nil, err
+    }
 
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
+    payload = append(payload, data)
+  }
 
-	return payload, nil
+  if err := rows.Err(); err != nil {
+    return nil, err
+  }
+
+  if err := rows.Close(); err != nil {
+    return nil, err
+  }
+
+  return payload, nil
 }
 
-func (m *mysqlPostRepo) Fetch(ctx context.Context, num int64) ([]*models.Post, error) {
-	query := "SELECT id, title, content FROM test_tb LIMIT ?"
+func (m *mysqlUserRepo) Fetch(ctx context.Context, args ...interface{}) ([]*models.User, error) {
+  query := "SELECT id, email FROM users LIMIT ?"
 
-	return m.fetch(ctx, query, num)
+  return m.fetch(ctx, query, args)
 }
 
+/*
 func (m *mysqlPostRepo) GetByID(ctx context.Context, id int64) (*models.Post, error) {
 	query := "SELECT id, title, content FROM test_tb WHERE id=?"
 
