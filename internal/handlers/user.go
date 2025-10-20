@@ -1,41 +1,41 @@
 package handlers
 
 import (
-  "encoding/json"
-  "fmt"
-  "github.com/golang-ddd-postgresql-auth/internal/repositories"
-  "github.com/golang-ddd-postgresql-auth/store"
-  "net/http"
-  "strconv"
+	"encoding/json"
+	_ "fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-ddd-postgresql-auth/internal/repositories"
+	"github.com/golang-ddd-postgresql-auth/store"
+	"net/http"
+	_ "strconv"
 
-  "github.com/gin-gonic/gin"
-  "github.com/golang-ddd-postgresql-auth/internal/drivers"
-  models "github.com/golang-ddd-postgresql-auth/models"
-  "github.com/pkg/errors"
-  "github.com/sirupsen/logrus"
+	_ "github.com/gin-gonic/gin"
+	"github.com/golang-ddd-postgresql-auth/internal/drivers"
+	_ "github.com/golang-ddd-postgresql-auth/models"
+	_ "github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // NewPostHandler
-func NewPostHandler(db *drivers.DB) *Post {
-  return &Post{
-    repo: repositories.NewSQLPostRepo(db.SQL),
-  }
+func NewUserHandler(db *drivers.DB) *User {
+	return &User{
+		repo: repositories.NewSQLPostRepo(db.SQL),
+	}
 }
 
-// Post
-type Post struct {
-  repo store.Store
+type User struct {
+	repo store.Store
 }
 
 // Fetch all post data
-func (p *Post) Fetch(log *logrus.Logger) http.HandlerFunc {
-  return func(w http.ResponseWriter, r *http.Request) {
+func (p *User) Fetch(log *logrus.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
 
-    payload, _ := p.repo.Fetch(r.Context(), 5)
+		payload, _ := p.repo.Fetch(c)
 
-    log.Info("Successfully fetch")
-    respondwithJSON(w, http.StatusOK, payload)
-  }
+		log.Info("Successfully fetch")
+		respondwithJSON(c.Writer, http.StatusOK, payload)
+	}
 }
 
 /*
@@ -175,14 +175,14 @@ func getPostIDFromRequest(request *http.Request) (*int64, error) {
 */
 // respondwithJSON write json response format
 func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
-  response, _ := json.Marshal(payload)
+	response, _ := json.Marshal(payload)
 
-  w.Header().Set("Content-Type", "application/json")
-  w.WriteHeader(code)
-  _, _ = w.Write(response)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	_, _ = w.Write(response)
 }
 
 // respondwithError return error message
 func respondWithError(w http.ResponseWriter, code int, msg string) {
-  respondwithJSON(w, code, map[string]string{"message": msg})
+	respondwithJSON(w, code, map[string]string{"message": msg})
 }
