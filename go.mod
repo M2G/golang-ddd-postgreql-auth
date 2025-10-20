@@ -1,4 +1,4 @@
-module github.com/golang-ddd-postgresql-auth
+module github.com/golang-ddd-auth
 
 go 1.25.3
 

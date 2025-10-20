@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-ddd-postgresql-auth/internal/handlers"
+	"github.com/golang-ddd-auth/internal/handlers"
 	"github.com/sirupsen/logrus"
 )
 

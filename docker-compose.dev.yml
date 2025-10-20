@@ -7,11 +7,11 @@ services:
       target: dev
     container_name: go_mysql_crud_api
     volumes:
-      - ./:/go/src/github.com/golang-ddd-postgresql-auth
+      - ./:/go/src/github.com/golang-ddd-auth
   #  environment:
       #   - GOOGLE_APPLICATION_CREDENTIALS=credentials.json
       #- VIRTUAL_PORT=80
-      #- VIRTUAL_HOST=golang-ddd-postgresql-auth.docker.dev
+      #- VIRTUAL_HOST=golang-ddd-auth.docker.dev
     env_file:
       - configuration/env/dev.env
     ports:

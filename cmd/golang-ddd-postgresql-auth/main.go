@@ -4,11 +4,11 @@ import (
 	"fmt"
 	//"net/http"
 
-	"github.com/golang-ddd-postgresql-auth/internal/drivers"
-	"github.com/golang-ddd-postgresql-auth/internal/handlers"
+	"github.com/golang-ddd-auth/internal/drivers"
+	"github.com/golang-ddd-auth/internal/handlers"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/golang-ddd-postgresql-auth/internal/handlers"
+	// "github.com/golang-ddd-auth/internal/handlers"
 	"context"
 	"log"
 	_ "net/http"
@@ -17,7 +17,7 @@ import (
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	//"github.com/go-chi/chi/middleware"
-	routes "github.com/golang-ddd-postgresql-auth/internal/router"
+	routes "github.com/golang-ddd-auth/internal/router"
 	logrus "github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v3"
 )

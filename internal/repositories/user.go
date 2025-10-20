@@ -7,9 +7,9 @@ import (
 
   _ "github.com/lib/pq"
 
-  "github.com/golang-ddd-postgresql-auth/store"
+  "github.com/golang-ddd-auth/store"
 
-  models "github.com/golang-ddd-postgresql-auth/models"
+  models "github.com/golang-ddd-auth/models"
 )
 
 // NewSQLPostRepo retunrs implement of post repository interface

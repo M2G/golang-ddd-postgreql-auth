@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	_ "fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-ddd-postgresql-auth/internal/repositories"
-	"github.com/golang-ddd-postgresql-auth/store"
+	"github.com/golang-ddd-auth/internal/repositories"
+	"github.com/golang-ddd-auth/store"
 	"net/http"
 	_ "strconv"
 
 	_ "github.com/gin-gonic/gin"
-	"github.com/golang-ddd-postgresql-auth/internal/drivers"
-	_ "github.com/golang-ddd-postgresql-auth/models"
+	"github.com/golang-ddd-auth/internal/drivers"
+	_ "github.com/golang-ddd-auth/models"
 	_ "github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )

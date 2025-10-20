@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 
-	"github.com/golang-ddd-postgresql-auth/models"
+	"github.com/golang-ddd-auth/models"
 )
 
 // Store explain...

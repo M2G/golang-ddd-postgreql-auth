@@ -48,4 +48,4 @@ run:
   skip-dirs:
     - test/testdata_etc
   skip-files:
-    - cmd/golang-ddd-postgresql-auth/main_test.go
+    - cmd/golang-ddd-auth/main_test.go
