@@ -2,6 +2,7 @@ package drivers
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -17,21 +18,26 @@ func ConnectSQL(host, port, uname, pass, dbname string) (*DB, error) {
 	// DBConn
 	var dbConn = &DB{}
 
-	connStr := "postgres://postgres:password@localhost:5432/test_db?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	defer db.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err = db.Ping(); err != nil {
-		log.Println("DB Ping Failed")
-		log.Fatal(err)
-	}
-	log.Println("DB Connection started successfully")
+	url := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		"postgres",
+		"postgres",
+		"db",
+		"5432",
+		"test_db")
+
+	db, err := sql.Open("postgres", url)
 
 	if err != nil {
 		panic(err)
 	}
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("DB Connection started successfully")
+
 	dbConn.SQL = db
 
 	return dbConn, err
